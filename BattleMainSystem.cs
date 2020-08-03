@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleMainSystem : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class BattleMainSystem : MonoBehaviour
     bool CommandSelect;
 
     float second = 0f;
+
+    public GameObject battleLogObject;
+    private string allMassage = "";
 
     private enum GameState
     {
@@ -38,23 +42,53 @@ public class BattleMainSystem : MonoBehaviour
         PlayerChimeraPanel.SetActive(false);
         ResultPanel.SetActive(false);
         CommandSelect = false;
+        //batlleLog = battleLogObject.GetComponent<Text>();
+
     }
 
     // Update is called once per frame
 
-    void ViewResult()
+
+    void Update()
     {
-        ResultPanel.SetActive(true);
+        Text batlleLog = battleLogObject.GetComponent<Text>();
+        batlleLog.text =  allMassage;
+        switch (currentState)
+        {
+            case GameState.PlayerSelect:
+                PlayerSelect();
+                break;
+            case GameState.PlayerChimeraSelect:
+                PlayerChimeraSelect();
+                break;
+            case GameState.PlayerTurnEnd:
+                PlayerTurnEnd();
+                break;
+            case GameState.EnemySelect:
+                EnemySelect();
+                break;
+            case GameState.EnemyChimeraSelect:
+                EnemyChimeraSelect();
+                break;
+            case GameState.EnemyTurnEnd:
+                EnemyTurnEnd();
+                break;
+            case GameState.GameWin:
+                GameWin();
+                break;
+            case GameState.GameOver:
+                break;
+            default:
+                break;
+        }
+
     }
-
-
-
 
     //ターン状態の遷移
 
     public void PlayerSelect()
     {
-        if(CommandSelect == true)
+        if (CommandSelect == true)
         {
             PlayerPanel.SetActive(false);
             PlayerChimeraPanel.SetActive(true);
@@ -108,8 +142,8 @@ public class BattleMainSystem : MonoBehaviour
             PlayerChimeraPanel.SetActive(false);
             currentState = GameState.PlayerSelect;
         }
-        
-        
+
+
     }
 
     public void GameWin()
@@ -132,41 +166,41 @@ public class BattleMainSystem : MonoBehaviour
     {
         enemy.OnDamage(player.at);
         CommandSelect = true;
-        
+        allMassage = "体当たり攻撃 20ダメージ\n" + allMassage;
+
+
     }
 
-    void Update()
+    public void PushAt1Button()
     {
-        switch (currentState)
-        {
-            case GameState.PlayerSelect:
-                PlayerSelect();
-                break;
-            case GameState.PlayerChimeraSelect:
-                PlayerChimeraSelect();
-                break;
-            case GameState.PlayerTurnEnd:
-                PlayerTurnEnd();
-                break;
-            case GameState.EnemySelect:
-                EnemySelect();
-                break;
-            case GameState.EnemyChimeraSelect:
-                EnemyChimeraSelect();
-                break;
-            case GameState.EnemyTurnEnd:
-                EnemyTurnEnd();
-                break;
-            case GameState.GameWin:
-                GameWin();
-                break;
-            case GameState.GameOver:
-                break;
-            default:
-                break;
-        }
+        enemy.OnDamage(50);
+        CommandSelect = true;
+        allMassage = "ひっかき攻撃 50ダメージ\n" + allMassage;
 
     }
 
-    
+    public void PushAt2Button()
+    {
+        enemy.OnDamage(25);
+        CommandSelect = true;
+        allMassage = "噛みつき攻撃 25ダメージ\n" + allMassage;
+
+    }
+
+    public void PushAt3Button()
+    {
+        enemy.OnDamage(-20);
+        CommandSelect = true;
+        allMassage = "体当たり攻撃 20ダメージ\n" + allMassage;
+
+    }
+
+
+
+    void ViewResult()
+    {
+        ResultPanel.SetActive(true);
+    }
+
+
 }
